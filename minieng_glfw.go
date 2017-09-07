@@ -71,8 +71,6 @@ func mouseDownCallback(w *glfw.Window, b glfw.MouseButton, a glfw.Action, m glfw
 }
 
 func mouseMoveCallback(w *glfw.Window, x float64, y float64) {
-	Input := Input
-
 	Input.Mouse.X, Input.Mouse.Y = float32(x)*RetinaScale, float32(y)*RetinaScale
 	if Input.Mouse.Action != Release && Input.Mouse.Action != Press {
 		Input.Mouse.Action = Move
