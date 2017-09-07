@@ -28,6 +28,8 @@ type Drawable interface {
 
 // RenderComponent ...
 type RenderComponent struct {
+	// Hidden is used to prevent drawing by OpenGL
+	Hidden   bool
 	Drawable Drawable
 	zIndex   float32
 }
@@ -127,6 +129,9 @@ func (rs *RenderSystem) Update(dt float32) {
 	Gl.Clear(Gl.COLOR_BUFFER_BIT | Gl.DEPTH_BUFFER_BIT)
 
 	for _, e := range rs.entities {
+		if e.RenderComponent.Hidden {
+			continue // with other entities
+		}
 		if e.Drawable != nil {
 			e.Drawable.Draw(dt)
 		}
