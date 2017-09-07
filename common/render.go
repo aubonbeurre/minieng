@@ -1,10 +1,11 @@
-package minieng
+package common
 
 import (
 	"image/color"
 	"sort"
 
 	"github.com/aubonbeurre/glplus"
+	"github.com/aubonbeurre/minieng"
 )
 
 const (
@@ -31,20 +32,14 @@ type RenderComponent struct {
 	zIndex   float32
 }
 
-// Component ...
-type Component struct {
-	BasicEntity
-	RenderComponent
-}
-
 // SetZIndex ...
 func (r *RenderComponent) SetZIndex(index float32) {
 	r.zIndex = index
-	Mailbox.Dispatch(&renderChangeMessage{})
+	minieng.Mailbox.Dispatch(&renderChangeMessage{})
 }
 
 type renderEntity struct {
-	*BasicEntity
+	*minieng.BasicEntity
 	*RenderComponent
 }
 
@@ -69,7 +64,7 @@ func (r renderEntityList) Swap(i, j int) {
 // RenderSystem ...
 type RenderSystem struct {
 	entities renderEntityList
-	world    *World
+	world    *minieng.World
 
 	sortingNeeded bool
 	//currentShader Shader
@@ -79,7 +74,7 @@ type RenderSystem struct {
 func (*RenderSystem) Priority() int { return RenderSystemPriority }
 
 // New ...
-func (rs *RenderSystem) New(w *World) {
+func (rs *RenderSystem) New(w *minieng.World) {
 	rs.world = w
 
 	//addCameraSystemOnce(w)
@@ -87,13 +82,13 @@ func (rs *RenderSystem) New(w *World) {
 	//initShaders(w)
 	//engo.Gl.Enable(engo.Gl.MULTISAMPLE)
 
-	Mailbox.Listen("renderChangeMessage", func(Message) {
+	minieng.Mailbox.Listen("renderChangeMessage", func(minieng.Message) {
 		rs.sortingNeeded = true
 	})
 }
 
 // Add ...
-func (rs *RenderSystem) Add(basic *BasicEntity, render *RenderComponent) {
+func (rs *RenderSystem) Add(basic *minieng.BasicEntity, render *RenderComponent) {
 	rs.entities = append(rs.entities, renderEntity{BasicEntity: basic, RenderComponent: render})
 	render.Drawable.Setup()
 	rs.sortingNeeded = true
@@ -107,7 +102,7 @@ func (rs *RenderSystem) RemoveAll() {
 }
 
 // Remove ...
-func (rs *RenderSystem) Remove(basic BasicEntity) {
+func (rs *RenderSystem) Remove(basic minieng.BasicEntity) {
 	var delete = -1
 	for index, entity := range rs.entities {
 		if entity.ID() == basic.ID() {
