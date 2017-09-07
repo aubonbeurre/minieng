@@ -167,7 +167,7 @@ func (m *MouseSystem) Update(dt float32) {
 	// Translate Mouse.X and Mouse.Y into "game coordinates"
 	switch minieng.Backend {
 	case "GLFW":
-		m.mouseX = minieng.Input.Mouse.X * minieng.RetinaScale
+		m.mouseX = minieng.Input.Mouse.X
 		m.mouseY = minieng.Input.Mouse.Y
 	case "Mobile":
 		m.mouseX = minieng.Input.Mouse.X
