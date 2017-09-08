@@ -14,4 +14,7 @@ var (
 
 	// Time ...
 	Time *Clock
+
+	windowWidth  float32
+	windowHeight float32
 )

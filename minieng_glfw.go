@@ -25,17 +25,35 @@ var (
 
 	window *glfw.Window
 
-	// WindowWidth ...
-	WindowWidth = 1024
-	// WindowHeight ...
-	WindowHeight = 768
-	// CanvasWidth ...
-	CanvasWidth int
-	// CanvasHeight ...
-	CanvasHeight int
-	// RetinaScale ...
-	RetinaScale float32 = 1
+	canvasWidth  float32
+	canvasHeight float32
+	retinaScale  float32 = 1
 )
+
+// WindowWidth ...
+func WindowWidth() float32 {
+	return windowWidth
+}
+
+// WindowHeight ...
+func WindowHeight() float32 {
+	return windowHeight
+}
+
+// CanvasWidth ...
+func CanvasWidth() float32 {
+	return canvasWidth
+}
+
+// CanvasHeight ...
+func CanvasHeight() float32 {
+	return canvasHeight
+}
+
+// CanvasScale ...
+func CanvasScale() float32 {
+	return retinaScale
+}
 
 // handle GLFW errors by printing them out
 func errorCallback(err glfw.ErrorCode, desc string) {
@@ -56,7 +74,7 @@ func keyCallback(w *glfw.Window, k glfw.Key, scancode int, a glfw.Action, mods g
 
 func mouseDownCallback(w *glfw.Window, b glfw.MouseButton, a glfw.Action, m glfw.ModifierKey) {
 	x, y := window.GetCursorPos()
-	Input.Mouse.X, Input.Mouse.Y = float32(x)*RetinaScale, float32(y)*RetinaScale
+	Input.Mouse.X, Input.Mouse.Y = float32(x)*retinaScale, float32(y)*retinaScale
 
 	// this is only valid because we use an internal structure that is
 	// 100% compatible with glfw3.h
@@ -71,7 +89,7 @@ func mouseDownCallback(w *glfw.Window, b glfw.MouseButton, a glfw.Action, m glfw
 }
 
 func mouseMoveCallback(w *glfw.Window, x float64, y float64) {
-	Input.Mouse.X, Input.Mouse.Y = float32(x)*RetinaScale, float32(y)*RetinaScale
+	Input.Mouse.X, Input.Mouse.Y = float32(x)*retinaScale, float32(y)*retinaScale
 	if Input.Mouse.Action != Release && Input.Mouse.Action != Press {
 		Input.Mouse.Action = Move
 	}
@@ -84,18 +102,20 @@ func mouseWheelCallback(w *glfw.Window, xoff float64, yoff float64) {
 
 func onSizeCallback(w *glfw.Window, width int, height int) {
 	message := WindowResizeMessage{
-		OldWidth:  int(WindowWidth),
-		OldHeight: int(WindowHeight),
+		OldWidth:  int(windowWidth),
+		OldHeight: int(windowHeight),
 		NewWidth:  width,
 		NewHeight: height,
 	}
 
-	WindowWidth = width
-	WindowHeight = height
+	windowWidth = float32(width)
+	windowHeight = float32(height)
 
 	// get the texture of the window because it may have changed since creation
-	CanvasWidth, CanvasHeight = w.GetFramebufferSize()
-	RetinaScale = float32(CanvasWidth) / float32(width)
+	x, y := w.GetFramebufferSize()
+	canvasWidth = float32(x)
+	canvasHeight = float32(y)
+	retinaScale = canvasWidth / float32(width)
 
 	Mailbox.Dispatch(message)
 }
@@ -133,9 +153,9 @@ func CreateWindow(title string, width, height int) {
 	glfw.WindowHint(glfw.Samples, 4)
 
 	// do the actual window creation
-	WindowWidth = width
-	WindowHeight = height
-	window, err = glfw.CreateWindow(WindowWidth, WindowHeight, title, nil, nil)
+	windowWidth = float32(width)
+	windowHeight = float32(height)
+	window, err = glfw.CreateWindow(width, height, title, nil, nil)
 	if err != nil {
 		// we legitimately cannot recover from a failure to create
 		// the window in this sample, so just bail out
@@ -153,8 +173,10 @@ func CreateWindow(title string, width, height int) {
 	// new window as the current context to operate on
 	window.MakeContextCurrent()
 
-	CanvasWidth, CanvasHeight = window.GetFramebufferSize()
-	RetinaScale = float32(CanvasWidth) / float32(WindowWidth)
+	x, y := window.GetFramebufferSize()
+	canvasWidth = float32(x)
+	canvasHeight = float32(y)
+	retinaScale = canvasWidth / windowWidth
 }
 
 // DestroyWindow ...
