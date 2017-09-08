@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/aubonbeurre/glplus"
 	"github.com/go-gl/glfw3/v3.2/glfw"
 )
 
@@ -172,6 +173,10 @@ func CreateWindow(title string, width, height int) {
 	// GLFW3 can work with more than one window, so make sure we set our
 	// new window as the current context to operate on
 	window.MakeContextCurrent()
+
+	// make sure that GLEW initializes all of the GL functions
+	glplus.Gl = glplus.NewContext()
+	fmt.Println("OpenGL version", glplus.Gl.Version())
 
 	x, y := window.GetFramebufferSize()
 	canvasWidth = float32(x)

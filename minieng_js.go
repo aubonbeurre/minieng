@@ -65,6 +65,7 @@ func CreateWindow(title string, width, height int) {
 		log.Println("Could not create context:", err)
 		return
 	}
+	glplus.Gl = Gl
 	fmt.Println("Gl.Viewport(0, 0,", width, ",", height, ")")
 	Gl.GetExtension("OES_texture_float")
 
