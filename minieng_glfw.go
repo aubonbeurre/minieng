@@ -4,6 +4,7 @@ package minieng
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
 	"runtime"
@@ -351,4 +352,8 @@ func init() {
 	NumNine = Key(glfw.KeyKP9)
 	NumDecimal = Key(glfw.KeyKPDecimal)
 	NumEnter = Key(glfw.KeyKPEnter)
+}
+
+func openFile(url string) (io.ReadCloser, error) {
+	return os.Open(url)
 }

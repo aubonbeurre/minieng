@@ -31,6 +31,7 @@ func Run(o RunOptions, defaultScene Scene) {
 
 	// Create input
 	Input = NewInputManager()
+	Files.SetRoot("assets")
 
 	CreateWindow(o.Title, o.Width, o.Height)
 	defer DestroyWindow()
