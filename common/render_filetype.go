@@ -16,6 +16,7 @@ import (
 // TextureResource ...
 type TextureResource struct {
 	Texture *glplus.GPTexture
+	Img     *image.RGBA
 	url     string
 }
 
@@ -59,41 +60,14 @@ func (i *imageLoader) Resource(url string) (minieng.Resource, error) {
 
 // NewTextureResource sends the image to the GPU and returns a `TextureResource` for easy access
 func NewTextureResource(img *image.RGBA) TextureResource {
-	fmt.Printf("COUCOU\n")
 	if t, err := glplus.NewRGBATexture(img, true, false); err != nil {
 		panic(err)
 	} else {
 		return TextureResource{
 			Texture: t,
+			Img:     img,
 		}
 	}
-}
-
-// Texture represents a texture loaded in the GPU RAM (by using OpenGL), which defined dimensions and viewport
-type Texture struct {
-	id     *glplus.Texture
-	width  float32
-	height float32
-}
-
-// Width returns the width of the texture.
-func (t Texture) Width() float32 {
-	return t.width
-}
-
-// Height returns the height of the texture.
-func (t Texture) Height() float32 {
-	return t.height
-}
-
-// Texture ...
-func (t Texture) Texture() *glplus.Texture {
-	return t.id
-}
-
-// Close ...
-func (t Texture) Close() {
-	glplus.Gl.DeleteTexture(t.id)
 }
 
 func init() {
