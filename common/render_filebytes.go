@@ -59,4 +59,5 @@ func init() {
 	minieng.Files.Register(".json", &stuffLoader{bytes: make(map[string]BytesResource)})
 	minieng.Files.Register(".obj", &stuffLoader{bytes: make(map[string]BytesResource)})
 	minieng.Files.Register(".ttf", &stuffLoader{bytes: make(map[string]BytesResource)})
+	minieng.Files.Register(".yml", &stuffLoader{bytes: make(map[string]BytesResource)})
 }
