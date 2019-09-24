@@ -81,17 +81,27 @@ func errorCallback(err glfw.ErrorCode, desc string) {
 // here we check for the escape key being pressed. if it is pressed,
 // request that the window be closed
 func keyCallback(w *glfw.Window, k glfw.Key, scancode int, a glfw.Action, mods glfw.ModifierKey) {
+	platform.keyChange(w, k, scancode, a, mods)
+
+	if platform.imguiIO.WantCaptureKeyboard() {
+		return
+	}
+
 	key := Key(k)
 	if a == glfw.Press {
 		Input.keys.Set(key, true)
 	} else if a == glfw.Release {
 		Input.keys.Set(key, false)
 	}
-
-	platform.keyChange(w, k, scancode, a, mods)
 }
 
 func mouseDownCallback(w *glfw.Window, b glfw.MouseButton, a glfw.Action, m glfw.ModifierKey) {
+	platform.mouseButtonChange(w, b, a, m)
+
+	if platform.imguiIO.WantCaptureMouse() {
+		return
+	}
+
 	x, y := window.GetCursorPos()
 	Input.Mouse.X, Input.Mouse.Y = float32(x)*retinaScale, float32(y)*retinaScale
 
@@ -105,11 +115,13 @@ func mouseDownCallback(w *glfw.Window, b glfw.MouseButton, a glfw.Action, m glfw
 	} else {
 		Input.Mouse.Action = Release
 	}
-
-	platform.mouseButtonChange(w, b, a, m)
 }
 
 func mouseMoveCallback(w *glfw.Window, x float64, y float64) {
+	if platform.imguiIO.WantCaptureMouse() {
+		return
+	}
+
 	Input.Mouse.X, Input.Mouse.Y = float32(x)*retinaScale, float32(y)*retinaScale
 	if Input.Mouse.Action != Release && Input.Mouse.Action != Press {
 		Input.Mouse.Action = Move
@@ -117,10 +129,14 @@ func mouseMoveCallback(w *glfw.Window, x float64, y float64) {
 }
 
 func mouseWheelCallback(w *glfw.Window, xoff float64, yoff float64) {
+	platform.mouseScrollChange(w, xoff, yoff)
+
+	if platform.imguiIO.WantCaptureMouse() {
+		return
+	}
+
 	Input.Mouse.ScrollX = float32(xoff)
 	Input.Mouse.ScrollY = float32(yoff)
-
-	platform.mouseScrollChange(w, xoff, yoff)
 }
 
 func onSizeCallback(w *glfw.Window, width int, height int) {
