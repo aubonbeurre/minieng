@@ -48,7 +48,7 @@ var (
 )
 
 const (
-	TARGET_FPS = 30
+	targetFPS = 30
 )
 
 // WindowWidth ...
@@ -401,11 +401,11 @@ func RunIteration() {
 
 	window.SwapBuffers()
 
-	for glfw.GetTime() < lasttime+1.0/TARGET_FPS {
+	for glfw.GetTime() < lasttime+1.0/targetFPS {
 		time.Sleep(10 * time.Millisecond)
 	}
 
-	lasttime += 1.0 / TARGET_FPS
+	lasttime += 1.0 / targetFPS
 }
 
 func runLoop(defaultScene Scene) {
