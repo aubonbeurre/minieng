@@ -17,4 +17,6 @@ var (
 
 	windowWidth  float32
 	windowHeight float32
+
+	lasttime float64
 )

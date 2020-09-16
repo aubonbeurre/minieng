@@ -47,6 +47,10 @@ var (
 	retinaScale  float32 = 1
 )
 
+const (
+	TARGET_FPS = 30
+)
+
 // WindowWidth ...
 func WindowWidth() float32 {
 	return windowWidth
@@ -353,6 +357,9 @@ func CreateWindow(title string, width, height int) {
 	}
 	platform.setKeyMapping()
 	window.SetCharCallback(platform.charChange)
+
+	lasttime = glfw.GetTime()
+
 }
 
 // DestroyWindow ...
@@ -393,6 +400,12 @@ func RunIteration() {
 	Input.Mouse.Action = Neutral
 
 	window.SwapBuffers()
+
+	for glfw.GetTime() < lasttime+1.0/TARGET_FPS {
+		time.Sleep(10 * time.Millisecond)
+	}
+
+	lasttime += 1.0 / TARGET_FPS
 }
 
 func runLoop(defaultScene Scene) {
